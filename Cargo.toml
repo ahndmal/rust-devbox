@@ -11,3 +11,10 @@ error-chain = "0.12.4"
 reqwest = { version = "0.11", features = ["json"] }
 json = "0.12.4"
 postgres = "0.19.3"
+
+#[dependencies.windows]
+#version = "0.36.1"
+#features = [
+#    "alloc",
+#    "Data_Xml_Dom",
+#]
