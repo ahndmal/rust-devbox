@@ -16,7 +16,7 @@ fn main(){
 
 async fn reqw() {
     println!("Started!");
-    let body = reqwest::get("https://news.ycombinator.com")
+    let body = reqwest::get("https://httpbin.org/get")
         .await
         .unwrap()
         .text()
@@ -24,6 +24,7 @@ async fn reqw() {
         .unwrap();
 
     println!("body = {:?}", body);
+    println!("END");
 }
 
 // async fn hyper_my() {
