@@ -1,19 +1,19 @@
-use std::io::Read;
-use curl::easy::Easy;
 
 mod http {
+    use std::io::Read;
+    use std::io::{stdout, Write};
+    use curl::easy::Easy;
+
+    // Print a web page onto stdout
     fn main() {
-        let mut data = "this is the body".as_bytes();
-
         let mut easy = Easy::new();
-        easy.url("http://www.example.com/upload").unwrap();
-        easy.post(true).unwrap();
-        easy.post_field_size(data.len() as u64).unwrap();
-
-        let mut transfer = easy.transfer();
-        transfer.read_function(|buf| {
-            Ok(data.read(buf).unwrap_or(0))
+        easy.url("https://www.rust-lang.org/").unwrap();
+        easy.write_function(|data| {
+            stdout().write_all(data).unwrap();
+            Ok(data.len())
         }).unwrap();
-        transfer.perform().unwrap();
+        easy.perform().unwrap();
+
+        println!("{}", easy.response_code().unwrap());
     }
 }

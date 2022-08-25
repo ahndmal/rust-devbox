@@ -8,9 +8,32 @@ mod reqs;
 use std::io;
 use std::io::Read;
 use curl::easy::Easy;
+// use hyper::Client;
 
 fn main(){
+    reqw();
+}
 
+async fn reqw() {
+    println!("Started!");
+    let body = reqwest::get("https://news.ycombinator.com")
+        .await
+        .unwrap()
+        .text()
+        .await
+        .unwrap();
+
+    println!("body = {:?}", body);
+}
+
+// async fn hyper_my() {
+//     let client = Client::new();
+//     let uri = "http://httpbin.org/ip".parse()?;
+//     let resp = client.get(uri).await?;
+//     println!("Response: {}", resp.status());
+// }
+
+fn curll() {
     println!("Hello!");
     let mut data = "this is the body".as_bytes();
 
@@ -24,9 +47,7 @@ fn main(){
         Ok(data.read(buf).unwrap_or(0))
     }).unwrap();
     transfer.perform().unwrap();
-
 }
-
 
 
 // fn main() {
