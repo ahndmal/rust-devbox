@@ -7,17 +7,41 @@ use std::io;
 use std::io::Read;
 use std::thread::sleep;
 use std::time::Duration;
-use std::io::{stdout, Write};
 
 use curl::easy::Easy;
+use json::JsonValue::String;
 
 fn main() {
+    // let n = 6;
+    // (0..n).collect::<Vec<u32>>();
+    // let nums_arr = (0..n).collect::<Vec<u32>>();
+    // for temp in nums_arr {
+    //     println!("{}", temp);
+    // }
+
+    println!("{}", str::to_uppercase("aaa"));
+
+    // let a = 1;
+    // let b = 4;
+    // let mut anums: Vec<u32> = vec![];
+    // for i in a..b {
+    //     nums.push(i);
+    // }
+
+    positive_sum([1,-4,7,12])
 
 
-    //let st = "I love Rust";
-    // println!("{:?}", st.split(" ").collect::<Vec<&str>>());
+}
 
-
+fn positive_sum(slice: &[i32]) -> i32 {
+    // let mut nums: Vec<i32> = vec![];
+    let mut summ = 0;
+    for a in slice {
+        if a > &0 {
+            summ += a;
+        }
+    }
+    return summ;
 
 }
 
@@ -41,11 +65,14 @@ fn count_by2(x: u32, n: u32) -> Vec<u32>  {
 // }
 
 fn arr(n: usize) -> Vec<u32> {
-    let mut nums: Vec<u32> = vec![];
-    for a in 0..n {
-        nums.push(a);
-    }
-    return nums;
+    // let mut nums: Vec<u32> = vec![];
+    // for a in 0..n {
+    //     nums.push(a);
+    // }
+    // return nums;
+    //let st = "I love Rust";
+    // println!("{:?}", st.split(" ").collect::<Vec<&str>>());
+    return vec![];
 }
 
 
