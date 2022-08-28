@@ -12,47 +12,27 @@ use std::io::{stdout, Write};
 use curl::easy::Easy;
 
 fn main() {
-    let hexadecimal = 0x10;
-    let octal = 0o10;
-    let binary = 0b10;
-    let mut n = 10;
-    print!("{} ", n);
-    n = hexadecimal;
-    print!("{} ", n);
-    n = octal;
-    print!("{} ", n);
-    n = binary;
-    print!("{} ", n);
-}
 
-fn cats_loop() {
-    let mut x = [4; 5000];
-    x[2000] = 14;
-    print!("{}, {} \n", x[1000], x[2000]);
-
-    let mut cats = vec!["Murz", "Lyvko", "Sapko"];
-    cats.push("Pukh");
-    for cat in cats {
-        println!("{}", cat);
+    let nums = count_by(2,5);
+    for n in nums {
+        println!("{}", n);
     }
+
+
 }
 
-fn guess() {
-    let name = "Vasyl";
-    println!("Hello {}!", name);
-    println!("Enter your guess:");
-
-    let mut guess = String::new();
-
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line!");
-
-    let length = String::len(&guess);
-    println!("length is {}", length);
-
-    let guess: u32 = guess.trim().parse().expect("please type a number");
-
-    println!("You guessed: {}", guess);
+fn count_by(x: u32, n: u32) -> Vec<u32> {
+    let mut nums = vec![];
+    for a in 1..n + 1 {
+        let mut b = a * x;
+        nums.push(b);
+    }
+    return  nums;
 }
+
+fn count_by2(x: u32, n: u32) -> Vec<u32>  {
+    (1..=n).map(|e| x*e).collect()
+    //(x..x*n+1).filter(|y| *y%x==0).collect::<Vec<u32>>()
+}
+
 

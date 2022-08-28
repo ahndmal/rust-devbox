@@ -1,5 +1,5 @@
 
-mod http {
+mod m_http {
     use std::io::Read;
     use std::io::{stdout, Write};
     use curl::easy::Easy;
