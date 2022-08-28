@@ -1,76 +1,55 @@
-mod matches;
-mod web;
-mod loops;
-mod compounds;
-mod reqs;
-// mod win11;
+// mod cor::loops;
+// mod loops;
+// mod compounds;
+// mod reqs;
 
 use std::io;
 use std::io::Read;
+use std::thread::sleep;
+use std::time::Duration;
+use std::io::{stdout, Write};
+
 use curl::easy::Easy;
-// use hyper::Client;
 
-fn main(){
-    reqw();
+fn main() {
+    let _a = [""; 0];
+    let _aa = vec![true; 0];
+    let _b = vec![false; 0];
+
+    let mut ages = vec![1,2,3; 1000];
+    for a in ages {
+        println!("a is {}", a)
+    }
 }
 
-async fn reqw() {
-    println!("Started!");
-    let body = reqwest::get("https://httpbin.org/get")
-        .await
-        .unwrap()
-        .text()
-        .await
-        .unwrap();
+fn cats_loop() {
+    let mut x = [4; 5000];
+    x[2000] = 14;
+    print!("{}, {} \n", x[1000], x[2000]);
 
-    println!("body = {:?}", body);
-    println!("END");
+    let mut cats = vec!["Murz", "Lyvko", "Sapko"];
+    cats.push("Pukh");
+    for cat in cats {
+        println!("{}", cat);
+    }
 }
 
-// async fn hyper_my() {
-//     let client = Client::new();
-//     let uri = "http://httpbin.org/ip".parse()?;
-//     let resp = client.get(uri).await?;
-//     println!("Response: {}", resp.status());
-// }
+fn guess() {
+    let name = "Vasyl";
+    println!("Hello {}!", name);
+    println!("Enter your guess:");
 
-fn curll() {
-    println!("Hello!");
-    let mut data = "this is the body".as_bytes();
+    let mut guess = String::new();
 
-    let mut easy = Easy::new();
-    easy.url("http://www.example.com/upload").unwrap();
-    easy.post(true).unwrap();
-    easy.post_field_size(data.len() as u64).unwrap();
+    io::stdin()
+        .read_line(&mut guess)
+        .expect("Failed to read line!");
 
-    let mut transfer = easy.transfer();
-    transfer.read_function(|buf| {
-        Ok(data.read(buf).unwrap_or(0))
-    }).unwrap();
-    transfer.perform().unwrap();
+    let length = String::len(&guess);
+    println!("length is {}", length);
+
+    let guess: u32 = guess.trim().parse().expect("please type a number");
+
+    println!("You guessed: {}", guess);
 }
-
-
-// fn main() {
-
-    // let name = "Vasyl";
-    //
-    // println!("Hello {}!", name);
-    // println!("Enter your guess:");
-    //
-    // let mut guess = String::new();
-    //
-    // io::stdin()
-    //     .read_line(&mut guess)
-    //     .expect("Failed to read line!");
-    //
-    // let length = String::len(&guess);
-    // println!("length is {}", length);
-    //
-    // let guess: u32 = guess.trim().parse().expect("please type a number");
-    //
-    //
-    // println!("You guessed: {}", guess);
-
-// }
 

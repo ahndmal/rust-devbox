@@ -1,16 +1,9 @@
-// mod matches;
-// mod web;
-// mod loops;
-// mod compounds;
-// mod win11;
-//
-// use std::io;
 // use windows::{
-//     core::*, Data::Xml::Dom::*, Win32::Foundation::*, Win32::System::Threading::*,
+//     cor::*, Data::Xml::Dom::*, Win32::Foundation::*, Win32::System::Threading::*,
 //     Win32::UI::WindowsAndMessaging::*,
 // };
 //
-// fn xmlinit() -> Result<(), Error> {
+// fn winn() -> Result<()> {
 //     let doc = XmlDocument::new()?;
 //     doc.LoadXml("<html>hello world</html>")?;
 //
