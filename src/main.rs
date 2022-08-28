@@ -12,14 +12,17 @@ use std::io::{stdout, Write};
 use curl::easy::Easy;
 
 fn main() {
-    let _a = [""; 0];
-    let _aa = vec![true; 0];
-    let _b = vec![false; 0];
-
-    let mut ages = vec![1,2,3; 1000];
-    for a in ages {
-        println!("a is {}", a)
-    }
+    let hexadecimal = 0x10;
+    let octal = 0o10;
+    let binary = 0b10;
+    let mut n = 10;
+    print!("{} ", n);
+    n = hexadecimal;
+    print!("{} ", n);
+    n = octal;
+    print!("{} ", n);
+    n = binary;
+    print!("{} ", n);
 }
 
 fn cats_loop() {
