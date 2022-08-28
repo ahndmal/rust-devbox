@@ -1,4 +1,6 @@
 
+https://doc.rust-lang.org/cargo/commands/cargo-build.html
+
 cli:
 ```commandline
 cargo build
