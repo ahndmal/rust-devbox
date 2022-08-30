@@ -3,6 +3,7 @@
 // mod compounds;
 // mod reqs;
 
+use std::fs::File;
 use std::io;
 use std::io::Read;
 use std::thread::sleep;
@@ -28,7 +29,20 @@ fn main() {
     //     nums.push(i);
     // }
 
-    positive_sum([1,-4,7,12])
+    // positive_sum([1,-4,7,12])
+
+    print!("{} ", std::mem::size_of::<i32>());
+    print!("{} ", std::mem::size_of_val(&12));
+
+    let fl =  File::open("lorem.txt");
+    let mut buf = "";
+    match fl {
+        Ok(data) => {
+            data.read_to_string(&mut buf);
+            println!("{}", )},
+        Err(e) => {println!("ERROR")}
+    }
+
 
 
 }
