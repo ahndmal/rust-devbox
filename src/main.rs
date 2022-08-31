@@ -11,7 +11,7 @@ use std::thread::sleep;
 use std::time::Duration;
 
 use curl::easy::Easy;
-use json::JsonValue::String;
+// use json::JsonValue::String;
 
 fn main() {
 
@@ -24,6 +24,11 @@ fn main() {
     let mut name_2 = name.to_string();
     name_st.push('A');
     print!("{} {}", name, name_st);
+
+    let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+    print!("{}", contents);
 
     // for a in 1..1000_000 {
     //     println!("num s {}", a);
