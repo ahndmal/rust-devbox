@@ -6,6 +6,7 @@
 use std::fs::File;
 use std::io;
 use std::io::Read;
+use std::os::unix::raw::time_t;
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -13,6 +14,21 @@ use curl::easy::Easy;
 use json::JsonValue::String;
 
 fn main() {
+
+    let now = std::time::SystemTime::now();
+    println!("{:?}", now);
+
+    let mut name: &str = "Murz";
+    name = "Cat";
+    let mut name_st = str::to_string(name);
+    let mut name_2 = name.to_string();
+    name_st.push('A');
+    print!("{} {}", name, name_st);
+
+    // for a in 1..1000_000 {
+    //     println!("num s {}", a);
+    // }
+
     // let n = 6;
     // (0..n).collect::<Vec<u32>>();
     // let nums_arr = (0..n).collect::<Vec<u32>>();
@@ -20,29 +36,32 @@ fn main() {
     //     println!("{}", temp);
     // }
 
-    println!("{}", str::to_uppercase("aaa"));
 
-    // let a = 1;
-    // let b = 4;
-    // let mut anums: Vec<u32> = vec![];
-    // for i in a..b {
-    //     nums.push(i);
-    // }
 
     // positive_sum([1,-4,7,12])
 
-    print!("{} ", std::mem::size_of::<i32>());
-    print!("{} ", std::mem::size_of_val(&12));
-
-    let fl =  File::open("lorem.txt");
-    let mut buf = "";
-    match fl {
-        Ok(data) => {
-            data.read_to_string(&mut buf);
-            println!("{}", )},
-        Err(e) => {println!("ERROR")}
+    match std::time::SystemTime::elapsed(&now) {
+        Ok(res) => {
+            println!("{}", res.as_millis())
+        },
+        Err(e) => {
+            println!("{}", e.to_string())
+        }
     }
+}
 
+fn closure_refs() {
+    // print!("{} ", std::mem::size_of::<i32>());
+    // print!("{} ", std::mem::size_of_val(&12));
+    //
+    // let fl =  File::open("lorem.txt");
+    // let mut buf = "";
+    // match fl {
+    //     Ok(data) => {
+    //         data.read_to_string(&mut buf);
+    //         println!("{:?}", data)},
+    //     Err(e) => {println!("ERROR")}
+    // }
 
 
 }
