@@ -1,5 +1,3 @@
-
-
 mod m_functions {
 
     fn divide(dividend: i32, divisor: i32) -> (i32, i32) {
@@ -22,5 +20,12 @@ mod m_functions {
     print!("{} ", f4()[0]);
     print!("{} ", f5()[0]);
 
+    fn coll_two() -> i32 {
+        let mut arr:[i32; 7] = [23,31,12,4234,312,31];
+        let mut leng = arr.len();
+        arr = [i32; 8];
+        leng = arr.len();
+        return leng;
+    }
 
 }

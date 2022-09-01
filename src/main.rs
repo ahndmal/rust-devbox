@@ -13,10 +13,27 @@ use std::time::Duration;
 use curl::easy::Easy;
 // use json::JsonValue::String;
 
+fn coll_two() -> usize {
+    let mut arr:[i32; 6] = [23,31,12,4234,312,31];
+    let mut leng = arr.len();
+    arr[0] = 1;
+    // arr = [i32; 8];
+    let arr2 = &arr;
+    let mut arr3 = arr2.clone();
+    arr3[0] = 0;
+    println!("{:?}", arr);
+    println!("{:?}", arr2);
+    println!("{:?}", arr3);
+    leng = arr.len();
+    return leng;
+}
+
 fn main() {
 
     let now = std::time::SystemTime::now();
     println!("{:?}", now);
+
+    println!("{}", coll_two());
 
     let mut name: &str = "Murz";
     name = "Cat";
@@ -24,11 +41,11 @@ fn main() {
     let mut name_2 = name.to_string();
     name_st.push('A');
     print!("{} {}", name, name_st);
-
-    let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).unwrap();
-    print!("{}", contents);
+    //
+    // let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
+    // let mut contents = String::new();
+    // file.read_to_string(&mut contents).unwrap();
+    // print!("{}", contents);
 
     // for a in 1..1000_000 {
     //     println!("num s {}", a);
