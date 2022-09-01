@@ -21,4 +21,9 @@ mod strs {
         let w2: &String = &word;
         print!("{} {}", w1, w2);
     }
+
+    fn concatt(a: &str, b: &str) -> &str {
+        let c = str::fmt("{}{}", a, b);
+        c
+    }
 }

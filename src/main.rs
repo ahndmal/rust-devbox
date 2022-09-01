@@ -33,7 +33,14 @@ fn main() {
     let now = std::time::SystemTime::now();
     println!("{:?}", now);
 
-    println!("{}", coll_two());
+    // println!("{}", coll_two());
+
+    fn concatt(a: &str, b: &str) -> &str {
+        let c = concat!("{}{}", a, b);
+            // let c = [a, b].join("");
+        c
+    }
+    concatt("Hello ", "cat");
 
     let mut name: &str = "Murz";
     name = "Cat";
