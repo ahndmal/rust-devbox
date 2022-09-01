@@ -7,3 +7,7 @@ cargo build
 cargo build --release
 cargo run
 ```
+
+```cli
+rustc -O main.rs
+```
