@@ -2,7 +2,9 @@
 // mod loops;
 // mod compounds;
 // mod reqs;
+// mod cor;
 
+use std::fmt::format;
 use std::fs::File;
 use std::io;
 use std::io::Read;
@@ -28,26 +30,40 @@ fn coll_two() -> usize {
     return leng;
 }
 
-fn main() {
+fn reading(count: u32) {
+    let mut sz: u32 = 0;
+    for a in 1..count {
+        let mut file = std::fs::File::open(format!("/home/malandr/Documents/lorem{}.txt", a)).unwrap();
+        let mut contents = String::new();
+        file.read_to_string(&mut contents).unwrap();
+        print!("{}", contents);
+        sz += 1;
+    }
+    // println!(format!( ">>>> parsed {} files", count));
+}
 
+fn main() {
     let now = std::time::SystemTime::now();
     println!("{:?}", now);
 
-    // println!("{}", coll_two());
+    reading(1000);
 
-    fn concatt(a: &str, b: &str) -> &str {
-        let c = concat!("{}{}", a, b);
-            // let c = [a, b].join("");
-        c
-    }
-    concatt("Hello ", "cat");
+    let end = std::time::SystemTime::elapsed(&now).unwrap().as_millis();
+    println!(format!(">> taken: {}", end));
 
-    let mut name: &str = "Murz";
-    name = "Cat";
-    let mut name_st = str::to_string(name);
-    let mut name_2 = name.to_string();
-    name_st.push('A');
-    print!("{} {}", name, name_st);
+    // fn concatt(a: &str, b: &str) -> &str {
+    //     let c = concat!("{}{}", a, b);
+    //         // let c = [a, b].join("");
+    //     c
+    // }
+    // concatt("Hello ", "cat");
+    //
+    // let mut name: &str = "Murz";
+    // name = "Cat";
+    // let mut name_st = str::to_string(name);
+    // let mut name_2 = name.to_string();
+    // name_st.push('A');
+    // print!("{} {}", name, name_st);
     //
     // let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
     // let mut contents = String::new();
