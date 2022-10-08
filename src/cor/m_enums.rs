@@ -15,7 +15,7 @@ mod m_enum {
 
     }
 
-    fn nums2(0 {
+    fn nums2() {
         const EUROPE: u8 = 0;
         const ASIA: u8 = 1;
         const AFRICA: u8 = 2;
@@ -41,5 +41,5 @@ mod m_enum {
             Continent::AFRICA => print!("AF"),
             _ => {}
         }
-    })
+    }
 }

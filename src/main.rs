@@ -35,7 +35,7 @@ fn reading(count: u32) {
     for a in 1..count {
         let mut file = std::fs::File::open(format!("/home/malandr/Documents/lorem{}.txt", a)).unwrap();
         let mut contents = String::new();
-        file.read_to_string(&mut contents).unwrap();
+        file.read(&mut contents).unwrap();
         print!("{}", contents);
         sz += 1;
     }
@@ -46,10 +46,10 @@ fn main() {
     let now = std::time::SystemTime::now();
     println!("{:?}", now);
 
-    reading(1000);
+    reading(2000);
 
-    let end = std::time::SystemTime::elapsed(&now).unwrap().as_millis();
-    println!(format!(">> taken: {}", end));
+    let end = std::time::SystemTime::elapsed(&now).unwrap().as_millis().to_string();
+    // println!(end);
 
     // fn concatt(a: &str, b: &str) -> &str {
     //     let c = concat!("{}{}", a, b);
@@ -82,7 +82,6 @@ fn main() {
     // }
 
 
-
     // positive_sum([1,-4,7,12])
 
     match std::time::SystemTime::elapsed(&now) {
@@ -96,18 +95,17 @@ fn main() {
 }
 
 fn closure_refs() {
-    // print!("{} ", std::mem::size_of::<i32>());
-    // print!("{} ", std::mem::size_of_val(&12));
-    //
-    // let fl =  File::open("lorem.txt");
-    // let mut buf = "";
+    print!("{} ", std::mem::size_of::<i32>());
+    print!("{} ", std::mem::size_of_val(&12));
+
+    let fl =  File::open("lorem.txt");
+    let mut buf = "";
     // match fl {
     //     Ok(data) => {
     //         data.read_to_string(&mut buf);
     //         println!("{:?}", data)},
     //     Err(e) => {println!("ERROR")}
     // }
-
 
 }
 
