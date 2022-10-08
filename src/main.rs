@@ -32,10 +32,12 @@ fn coll_two() -> usize {
 
 fn reading(count: u32) {
     let mut sz: u32 = 0;
-    for a in 1..count {
+    for a in 1..=count {
+        let file_name = format!("lorem{}.txt", a);
         let mut file = std::fs::File::open(format!("/home/malandr/Documents/lorem{}.txt", a)).unwrap();
+        println!(">> parsing file {}", file_name);
         let mut contents = String::new();
-        file.read(&mut contents).unwrap();
+        file.read_to_string(&mut contents).unwrap();
         print!("{}", contents);
         sz += 1;
     }
@@ -50,6 +52,7 @@ fn main() {
 
     let end = std::time::SystemTime::elapsed(&now).unwrap().as_millis().to_string();
     // println!(end);
+
 
     // fn concatt(a: &str, b: &str) -> &str {
     //     let c = concat!("{}{}", a, b);
