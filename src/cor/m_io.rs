@@ -12,8 +12,6 @@ mod my_io {
         std::env::set_var("abcd", "This is the value");
         print!(" [{:?}]", std::env::var("abcd"));
 
-        //
-
         print!("{}",
                if std::env::var("abcd").is_ok() {
                    "Already defined"

@@ -2,7 +2,7 @@
 // mod loops;
 // mod compounds;
 // mod reqs;
-// mod cor;
+// mod cor/fs/;
 
 use std::fmt::format;
 use std::fs::File;
@@ -10,13 +10,14 @@ use std::io;
 use std::io::Read;
 use std::os::unix::raw::time_t;
 use std::thread::sleep;
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
+use mongodb::{Client, options::ClientOptions};
 
 use curl::easy::Easy;
 // use json::JsonValue::String;
 
 fn coll_two() -> usize {
-    let mut arr:[i32; 6] = [23,31,12,4234,312,31];
+    let mut arr: [i32; 6] = [23, 31, 12, 4234, 312, 31];
     let mut leng = arr.len();
     arr[0] = 1;
     // arr = [i32; 8];
@@ -44,11 +45,18 @@ fn reading(count: u32) {
     // println!(format!( ">>>> parsed {} files", count));
 }
 
-fn main() {
-    let now = std::time::SystemTime::now();
-    println!("{:?}", now);
+// async fn mongo_conection() {
+//     let mut options = ClientOptions::parse("mongodb://172.17.0.3:27017").await?;
+//     options.app_name = Some("My App".to_string());
+//     let client = Client::with_options(options)?;
+//     for db_name in client.list_database_names(None, None).await? {
+//         println!("{}", db_name)
+//     }
+// }
 
-    reading(2000);
+fn main() {
+    let now: SystemTime = std::time::SystemTime::now();
+    println!("{:?}", now);
 
     let end = std::time::SystemTime::elapsed(&now).unwrap().as_millis().to_string();
     // println!(end);
@@ -67,11 +75,11 @@ fn main() {
     // let mut name_2 = name.to_string();
     // name_st.push('A');
     // print!("{} {}", name, name_st);
-    //
-    // let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
-    // let mut contents = String::new();
-    // file.read_to_string(&mut contents).unwrap();
-    // print!("{}", contents);
+
+    let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+    print!("{}", contents);
 
     // for a in 1..1000_000 {
     //     println!("num s {}", a);
@@ -90,7 +98,7 @@ fn main() {
     match std::time::SystemTime::elapsed(&now) {
         Ok(res) => {
             println!("{}", res.as_millis())
-        },
+        }
         Err(e) => {
             println!("{}", e.to_string())
         }
@@ -101,7 +109,7 @@ fn closure_refs() {
     print!("{} ", std::mem::size_of::<i32>());
     print!("{} ", std::mem::size_of_val(&12));
 
-    let fl =  File::open("lorem.txt");
+    let fl = File::open("lorem.txt");
     let mut buf = "";
     // match fl {
     //     Ok(data) => {
@@ -109,7 +117,6 @@ fn closure_refs() {
     //         println!("{:?}", data)},
     //     Err(e) => {println!("ERROR")}
     // }
-
 }
 
 fn positive_sum(slice: &[i32]) -> i32 {
@@ -121,7 +128,6 @@ fn positive_sum(slice: &[i32]) -> i32 {
         }
     }
     return summ;
-
 }
 
 fn count_by(x: u32, n: u32) -> Vec<u32> {
@@ -130,11 +136,11 @@ fn count_by(x: u32, n: u32) -> Vec<u32> {
         let mut b = a * x;
         nums.push(b);
     }
-    return  nums;
+    return nums;
 }
 
-fn count_by2(x: u32, n: u32) -> Vec<u32>  {
-    (1..=n).map(|e| x*e).collect()
+fn count_by2(x: u32, n: u32) -> Vec<u32> {
+    (1..=n).map(|e| x * e).collect()
     //(x..x*n+1).filter(|y| *y%x==0).collect::<Vec<u32>>()
 }
 
