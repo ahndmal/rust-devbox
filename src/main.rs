@@ -29,8 +29,8 @@ fn read_lorem() {
 async fn main() -> mongodb::error::Result<()> {
     #[derive(Serialize, Deserialize, Debug)]
     struct Workout {
-        record: u16,
-        sets: u8,
+        record: i64,
+        sets: i32,
         comments: String,
         day: String,
     }
@@ -40,9 +40,7 @@ async fn main() -> mongodb::error::Result<()> {
                          pass = std::env::var("PASS").unwrap());
 
     // let mut client_options = ClientOptions::parse(db_url).await?;
-
     // client_options.app_name = Some("My App".to_string());
-
     // let client = Client::with_options(client_options)?;
     let client = Client::with_uri_str(db_url).await?;
     let db = client.database("workouts");
@@ -51,20 +49,26 @@ async fn main() -> mongodb::error::Result<()> {
         .database("workouts")
         .collection::<Workout>("workouts");
 
-    let filter = doc! {  };
+    let filter = doc! { "day": "Sunday" };
     let find_options = FindOptions::builder().sort(doc! {"record": -1}).build();
 
     // let mut cursor =  workouts_coll.find(None, find_options).await?;
-    let cursor = workouts_coll.find(doc! { "day": "Sunday" }, None).await?;
+    let mut cursor = workouts_coll.find(None, None).await?;
 
-    let raw_doc = cursor.current();
-    let day1 = raw_doc.get_str("day").unwrap();
-
-
-    // for work in cursor {
-    //     println!("{:?}", work);
-    // }
-
+    while cursor.advance().await? {
+        let raw_doc = cursor.current();
+        // let mut comment = match raw_doc.get_str("comments") {
+        //     Ok => raw_doc.get_str("commets").unwrap(),
+        //     Err => "",
+        // };
+        let mut work = Workout{
+            record: raw_doc.get_i64("record").unwrap_or(0),
+            sets: raw_doc.get_i32("sets").unwrap(),
+            comments: raw_doc.get_str("comments").unwrap_or("").to_string(),
+            day: raw_doc.get_str("day").unwrap().to_string()
+        };
+        println!("{:?}", work);
+    }
 
     Ok(())
 }
