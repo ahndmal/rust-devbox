@@ -11,72 +11,61 @@ use std::thread::sleep;
 use std::time::Duration;
 
 use curl::easy::Easy;
-// use json::JsonValue::String;
+use mongodb::{Client, options::ClientOptions};
+use mongodb::{bson::doc, options::FindOptions};
+// use futures::stream::TryStreamExt;
+use serde::{Deserialize, Serialize};
 
-fn coll_two() -> usize {
-    let mut arr:[i32; 6] = [23,31,12,4234,312,31];
-    let mut leng = arr.len();
-    arr[0] = 1;
-    // arr = [i32; 8];
-    let arr2 = &arr;
-    let mut arr3 = arr2.clone();
-    arr3[0] = 0;
-    println!("{:?}", arr);
-    println!("{:?}", arr2);
-    println!("{:?}", arr3);
-    leng = arr.len();
-    return leng;
+fn read_lorem() {
+    let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+    print!("{}", contents);
 }
 
-fn main() {
 
-    let now = std::time::SystemTime::now();
-    println!("{:?}", now);
+#[tokio::main]
+async fn main() -> mongodb::error::Result<()> {
 
-    // println!("{}", coll_two());
-
-    fn concatt(a: &str, b: &str) -> &str {
-        let c = concat!("{}{}", a, b);
-            // let c = [a, b].join("");
-        c
+    #[derive(Serialize, Deserialize, Debug)]
+    struct Workout {
+        record: u16,
+        sets: u8,
+        comments: String,
+        day: String,
     }
-    concatt("Hello ", "cat");
 
-    let mut name: &str = "Murz";
-    name = "Cat";
-    let mut name_st = str::to_string(name);
-    let mut name_2 = name.to_string();
-    name_st.push('A');
-    print!("{} {}", name, name_st);
-    //
-    // let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
-    // let mut contents = String::new();
-    // file.read_to_string(&mut contents).unwrap();
-    // print!("{}", contents);
+    let db_url = "mongodb+srv://mongo-user1:Porkie@cluster0.t1yi6.mongodb.net/?retryWrites=true&w=majority";
 
-    // for a in 1..1000_000 {
-    //     println!("num s {}", a);
+    // let mut client_options = ClientOptions::parse(db_url).await?;
+
+    // client_options.app_name = Some("My App".to_string());
+
+    // let client = Client::with_options(client_options)?;
+    let client = Client::with_uri_str(db_url).await?;
+    let db = client.database("workouts");
+
+    let workouts_coll = client
+        .database("workouts")
+        .collection::<Workout>("workouts");
+
+    let filter = doc! {  };
+    let find_options = FindOptions::builder().sort(doc! {"record": -1}).build();
+
+    // let mut cursor =  workouts_coll.find(None, find_options).await?;
+    let cursor = workouts_coll.find(doc! { "day": "Sunday" }, None).await?;
+
+    let raw_doc = cursor.current();
+    let day1 = raw_doc.get_str("day").unwrap();
+
+
+
+    // for work in cursor {
+    //     println!("{:?}", work);
     // }
 
-    // let n = 6;
-    // (0..n).collect::<Vec<u32>>();
-    // let nums_arr = (0..n).collect::<Vec<u32>>();
-    // for temp in nums_arr {
-    //     println!("{}", temp);
-    // }
 
-
-
-    // positive_sum([1,-4,7,12])
-
-    match std::time::SystemTime::elapsed(&now) {
-        Ok(res) => {
-            println!("{}", res.as_millis())
-        },
-        Err(e) => {
-            println!("{}", e.to_string())
-        }
-    }
+    Ok(())
 }
 
 fn closure_refs() {
