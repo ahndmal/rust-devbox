@@ -3,6 +3,7 @@
 // mod compounds;
 // mod reqs;
 
+use std::alloc::System;
 use std::fs::File;
 use std::io;
 use std::io::Read;
@@ -26,7 +27,6 @@ fn read_lorem() {
 
 #[tokio::main]
 async fn main() -> mongodb::error::Result<()> {
-
     #[derive(Serialize, Deserialize, Debug)]
     struct Workout {
         record: u16,
@@ -35,7 +35,9 @@ async fn main() -> mongodb::error::Result<()> {
         day: String,
     }
 
-    let db_url = "mongodb+srv://mongo-user1:Porkie@cluster0.t1yi6.mongodb.net/?retryWrites=true&w=majority";
+    let db_url = format!("mongodb+srv://{user}:{pass}@cluster0.t1yi6.mongodb.net/?retryWrites=true&w=majority",
+                         user = std::env::var("USER").unwrap(),
+                         pass = std::env::var("PASS").unwrap());
 
     // let mut client_options = ClientOptions::parse(db_url).await?;
 
@@ -59,7 +61,6 @@ async fn main() -> mongodb::error::Result<()> {
     let day1 = raw_doc.get_str("day").unwrap();
 
 
-
     // for work in cursor {
     //     println!("{:?}", work);
     // }
@@ -80,8 +81,6 @@ fn closure_refs() {
     //         println!("{:?}", data)},
     //     Err(e) => {println!("ERROR")}
     // }
-
-
 }
 
 fn positive_sum(slice: &[i32]) -> i32 {
@@ -93,7 +92,6 @@ fn positive_sum(slice: &[i32]) -> i32 {
         }
     }
     return summ;
-
 }
 
 fn count_by(x: u32, n: u32) -> Vec<u32> {
@@ -102,11 +100,11 @@ fn count_by(x: u32, n: u32) -> Vec<u32> {
         let mut b = a * x;
         nums.push(b);
     }
-    return  nums;
+    return nums;
 }
 
-fn count_by2(x: u32, n: u32) -> Vec<u32>  {
-    (1..=n).map(|e| x*e).collect()
+fn count_by2(x: u32, n: u32) -> Vec<u32> {
+    (1..=n).map(|e| x * e).collect()
     //(x..x*n+1).filter(|y| *y%x==0).collect::<Vec<u32>>()
 }
 
