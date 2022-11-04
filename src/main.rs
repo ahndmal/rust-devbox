@@ -2,13 +2,13 @@ pub mod cor;
 pub mod my_http;
 
 use std::alloc::System;
+use std::ffi::c_int;
 use std::fs::File;
 use std::io;
 use std::io::Read;
 use std::os::unix::raw::time_t;
 use std::thread::sleep;
 use std::time::Duration;
-use chrono::{DateTime, TimeZone, NaiveDateTime, Utc};
 
 use curl::easy::Easy;
 use mongodb::{Client, Collection, options::ClientOptions};
@@ -18,8 +18,7 @@ use mongodb::bson::Document;
 use rand::Rng;
 // use futures::stream::TryStreamExt;
 use serde::{Deserialize, Serialize};
-extern crate postgres;
-use postgres::{Connection, TlsMode};
+use postgres::{Client as psqlClient, NoTls};
 
 fn read_lorem() {
     let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
@@ -28,24 +27,22 @@ fn read_lorem() {
     print!("{}", contents);
 }
 
-fn psql_connect() {
-
+#[derive(Serialize, Deserialize, Debug)]
+struct Page {
+    id: i32,
+    parent_id: i32,
+    title: String,
+    body: String,
+    comments: i32,
+    author_id: i32,
+    space_key: String,
 }
 
-#[tokio::main]
-async fn main() -> mongodb::error::Result<()> {
+fn psql_connect() {
+    //
+}
 
-
-    #[derive(Serialize, Deserialize, Debug)]
-    struct Page {
-        id: i64,
-        parent_id: i64,
-        title: String,
-        body: String,
-        comments: i32,
-        author_id: i64,
-    }
-
+async fn mongo_get() -> mongodb::error::Result<()> {
     let db_url = format!("mongodb+srv://{user}:{pass}@cluster0.t1yi6.mongodb.net/?retryWrites=true&w=majority",
                          user = std::env::var("USER").unwrap(),
                          pass = std::env::var("PASS").unwrap());
@@ -80,19 +77,65 @@ async fn main() -> mongodb::error::Result<()> {
         //     Err => "",
         // };
         let mut page = Page {
-            id: raw_doc.get_i64("id").unwrap_or(0),
+            id: raw_doc.get_i32("id").unwrap_or(0),
             comments: raw_doc.get_i32("comments").unwrap(),
-            author_id: raw_doc.get_i64("week").unwrap_or(0),
-            parent_id: raw_doc.get_i64("parent_id").unwrap_or(0),
+            author_id: raw_doc.get_i32("week").unwrap_or(0),
+            parent_id: raw_doc.get_i32("parent_id").unwrap_or(0),
             title: raw_doc.get_str("title").unwrap_or("").to_string(),
             body: raw_doc.get_str("body").unwrap_or("").to_string(),
+            space_key: raw_doc.get_str("space_key").unwrap_or("").to_string(),
         };
         println!("{:?}", page);
     }
-
     // println!("{}", rand_string(20).to_string());
 
     Ok(())
+}
+
+// #[tokio::main]
+fn main() {
+    //https://docs.rs/postgres/latest/postgres/config/struct.Config.html
+    let mut pg_client = psqlClient::connect("host=172.17.0.2 user=dev password=possum dbname=pages", NoTls).unwrap();
+
+    // CREATE
+    // create_pages_psql(100, 100, pg_client);
+
+    // GET
+    let rows = pg_client.query("select * from pages", &[]).unwrap();
+    for row in rows {
+        let id: i32 = row.get(0);
+        let title: &str = row.get(1);
+        let space_key: &str = row.get(2);
+        let body: &str = row.get(3);
+        //     let data: Option<&[u8]> = row.get(2);
+
+        println!("found page: {:?} {} {} {}", id, title, body, space_key);
+    }
+}
+
+fn create_pages_psql(from: i32, size: i32, pg_client: &mut postgres::Client) {
+    for a in from..size {
+        let mut page = Page {
+            id: 0,
+            title: format!("page {a}").to_string(),
+            body: rand_string(20),
+            space_key: ["DEV", "TEST", "DEV2"][rand::thread_rng().gen_range(0..2)].to_string(),
+            parent_id: rand::thread_rng().gen_range(1..10),
+            comments: 2,
+            author_id: 1,
+        };
+        pg_client.execute("insert into pages (title, space_key, body, parent_id, comments, author_id) \
+                    values ($1, $2, $3, $4, $5, $6)",
+                          &[
+                              &page.title.to_owned(),
+                              &page.space_key.to_owned(),
+                              &page.body.to_owned(),
+                              &page.parent_id,
+                              &page.comments,
+                              &page.author_id,
+                          ])
+            .unwrap();
+    }
 }
 
 fn rand_string(size: i32) -> String {
