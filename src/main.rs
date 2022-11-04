@@ -1,7 +1,5 @@
-// mod cor::loops;
-// mod loops;
-// mod compounds;
-// mod reqs;
+pub mod cor;
+pub mod my_http;
 
 use std::alloc::System;
 use std::fs::File;
@@ -10,14 +8,18 @@ use std::io::Read;
 use std::os::unix::raw::time_t;
 use std::thread::sleep;
 use std::time::Duration;
+use chrono::{DateTime, TimeZone, NaiveDateTime, Utc};
 
 use curl::easy::Easy;
 use mongodb::{Client, Collection, options::ClientOptions};
 use mongodb::{bson::doc, options::FindOptions};
+use mongodb::bson::Bson::DateTime;
 use mongodb::bson::Document;
 use rand::Rng;
 // use futures::stream::TryStreamExt;
 use serde::{Deserialize, Serialize};
+extern crate postgres;
+use postgres::{Connection, TlsMode};
 
 fn read_lorem() {
     let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
@@ -26,8 +28,13 @@ fn read_lorem() {
     print!("{}", contents);
 }
 
+fn psql_connect() {
+
+}
+
 #[tokio::main]
 async fn main() -> mongodb::error::Result<()> {
+
 
     #[derive(Serialize, Deserialize, Debug)]
     struct Page {
@@ -82,7 +89,6 @@ async fn main() -> mongodb::error::Result<()> {
         };
         println!("{:?}", page);
     }
-
 
     // println!("{}", rand_string(20).to_string());
 

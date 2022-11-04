@@ -1,6 +1,6 @@
-mod dates_times {
+pub mod dates_times {
 
-    fn dates_one() {
-
+    pub fn dates_one() -> std::time::SystemTime {
+        let _ = std::time::SystemTime::now();
     }
 }
