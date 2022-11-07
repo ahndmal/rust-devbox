@@ -18,36 +18,38 @@ use postgres::{Client as psqlClient, NoTls};
 use scraper::{Html, Selector};
 
 
-
 #[tokio::main]
-async fn main()  {
+async fn main() {
     let mut start = Instant::now();
 
-    let wiki_main_html = reqwest::get("https://en.wikipedia.org/wiki/Main_Page")
+    let wiki_main_html = reqwest::get("https://en.wikipedia.org/wiki/World_War_I")
         .await.unwrap()
         .text()
         .await.unwrap();
 
     let html_file = fs::read_to_string("/home/andrii/CLionProjects/rust-features/src/lorem1.html").unwrap();
     let document = Html::parse_document(wiki_main_html.as_str());
-    let sel = Selector::parse("div").unwrap();
-    for element in document.select(&sel) {
-        println!("{:?}", element.value());
+    let div_sel = Selector::parse("div").unwrap();
+    let li_sel = Selector::parse("li").unwrap();
+    let links_sel = Selector::parse("link").unwrap();
+
+    for link in document.select(&links_sel) {
+        let links_attrs = &link.value().attrs;
+        // for link in links_attrs {
+        //     // (QualName { prefix: None, ns: Atom('' type=static), local: Atom('href' type=static) }, Tendril<UTF8>(shared: "//login.wikimedia.org"))
+        //     println!("{:?}", link);
+        // }
+        println!("{:?}", &link.value().attr("href"));
+    }
+
+    for li in document.select(&li_sel) {
+        println!("{:?}", li);
     }
 
     let end = start.elapsed().as_millis();
     println!(">>> action took {end} millis");
-
 }
 
-
-
-fn read_lorem() {
-    let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).unwrap();
-    print!("{}", contents);
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Page {
@@ -58,10 +60,6 @@ struct Page {
     comments: i32,
     author_id: i32,
     space_key: String,
-}
-
-fn psql_connect() {
-    //
 }
 
 async fn mongo_get() -> mongodb::error::Result<()> {
