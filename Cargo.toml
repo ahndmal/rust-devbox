@@ -10,12 +10,17 @@ rand = "0.8.5"
 error-chain = "0.12.4"
 reqwest = { version = "0.11", features = ["json"] }
 json = "0.12.4"
+# db
 postgres = "0.19.4"
+mongodb = "2.3.1"
 curl = "0.4.44"
 hyper = "0.14"
-mongodb = "2.3.1"
 tokio = "1.21.2"
 serde = "1.0.147"
+# html
+scraper = "0.13.0"
+html5ever = "0.26.0"
+kuchiki = "0.8.1"
 
 #[dependencies.windows]
 #version = "0.36.1"

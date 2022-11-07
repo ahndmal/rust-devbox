@@ -1,10 +1,7 @@
-pub mod cor;
-pub mod my_http;
-
 use std::alloc::System;
 use std::ffi::c_int;
 use std::fs::File;
-use std::io;
+use std::{fs, io};
 use std::io::Read;
 use std::os::unix::raw::time_t;
 use std::thread::sleep;
@@ -19,6 +16,21 @@ use rand::Rng;
 // use futures::stream::TryStreamExt;
 use serde::{Deserialize, Serialize};
 use postgres::{Client as psqlClient, NoTls};
+use scraper::{Html, Selector};
+
+// #[tokio::main]
+fn main() {
+
+    let html = fs::read_to_string("/home/andrii/CLionProjects/rust-features/src/lorem1.html").unwrap();
+    let document = Html::parse_document(html.as_str());
+    let sel = Selector::parse("div").unwrap();
+    for element in document.select(&sel) {
+        println!("{:?}", element.value());
+    }
+
+}
+
+
 
 fn read_lorem() {
     let mut file = std::fs::File::open("src/cor/fs/lorem.txt").unwrap();
@@ -92,8 +104,8 @@ async fn mongo_get() -> mongodb::error::Result<()> {
     Ok(())
 }
 
-// #[tokio::main]
-fn main() {
+
+fn get_pages_psql() {
     //https://docs.rs/postgres/latest/postgres/config/struct.Config.html
     let mut pg_client = psqlClient::connect("host=172.17.0.2 user=dev password=possum dbname=pages", NoTls).unwrap();
 
