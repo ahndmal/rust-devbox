@@ -5,8 +5,7 @@ use std::{fs, io};
 use std::io::Read;
 use std::os::unix::raw::time_t;
 use std::thread::sleep;
-use std::time::Duration;
-
+use std::time::{Duration, Instant};
 use curl::easy::Easy;
 use mongodb::{Client, Collection, options::ClientOptions};
 use mongodb::{bson::doc, options::FindOptions};
@@ -18,15 +17,26 @@ use serde::{Deserialize, Serialize};
 use postgres::{Client as psqlClient, NoTls};
 use scraper::{Html, Selector};
 
-// #[tokio::main]
-fn main() {
 
-    let html = fs::read_to_string("/home/andrii/CLionProjects/rust-features/src/lorem1.html").unwrap();
-    let document = Html::parse_document(html.as_str());
+
+#[tokio::main]
+async fn main()  {
+    let mut start = Instant::now();
+
+    let wiki_main_html = reqwest::get("https://en.wikipedia.org/wiki/Main_Page")
+        .await.unwrap()
+        .text()
+        .await.unwrap();
+
+    let html_file = fs::read_to_string("/home/andrii/CLionProjects/rust-features/src/lorem1.html").unwrap();
+    let document = Html::parse_document(wiki_main_html.as_str());
     let sel = Selector::parse("div").unwrap();
     for element in document.select(&sel) {
         println!("{:?}", element.value());
     }
+
+    let end = start.elapsed().as_millis();
+    println!(">>> action took {end} millis");
 
 }
 
