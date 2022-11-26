@@ -39,12 +39,14 @@ async fn main() {
         //     // (QualName { prefix: None, ns: Atom('' type=static), local: Atom('href' type=static) }, Tendril<UTF8>(shared: "//login.wikimedia.org"))
         //     println!("{:?}", link);
         // }
-        println!("{:?}", &link.value().attr("href"));
+        // println!("{:?}", &link.value().attr("href"));
     }
-
+    let mut li_size = 0;
     for li in document.select(&li_sel) {
-        println!("{:?}", li);
+        li_size += 1;
+        // println!("{:?}", li);
     }
+    println!("{:?}", &li_size);
 
     let end = start.elapsed().as_millis();
     println!(">>> action took {end} millis");
