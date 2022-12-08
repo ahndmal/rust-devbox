@@ -1,4 +1,3 @@
-
 use std::alloc::System;
 use std::ffi::c_int;
 use std::fs::File;
@@ -18,10 +17,27 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 use postgres::{Client as psqlClient, NoTls};
 use scraper::{Html, Selector};
+use mini_redis::{client as redisClient, Result as RedisResult};
 
 
-// #[tokio::main]
-fn main() {
+#[tokio::main]
+async fn main() -> RedisResult<()> {
+// Open a connection to the mini-redis address.
+    let mut client = redisClient::connect("127.0.0.1:6379").await?;
+
+    // Set the key "hello" with value "world"
+    client.set("hello", "world".into()).await?;
+
+    // Get key "hello"
+    let result = client.get("hello").await?;
+
+    println!("got value from the server; result={:?}", result);
+
+    Ok(())
+
+}
+
+fn run_get_pages_psql() {
     let db_host = std::env::var("DB_HOST").unwrap();
     let db_pass = std::env::var("DB_PASS").unwrap();
     //https://docs.rs/postgres/latest/postgres/config/struct.Config.html
@@ -34,7 +50,6 @@ fn main() {
 
     // get pages
     get_pages_psql(&mut pg_client);
-
 }
 
 async fn parse_html() {
@@ -134,7 +149,6 @@ struct Page {
 //
 //     Ok(())
 // }
-
 
 fn get_pages_psql(pg_client: &mut postgres::Client) {
 
