@@ -1,3 +1,4 @@
+
 use std::alloc::System;
 use std::ffi::c_int;
 use std::fs::File;
@@ -6,10 +7,11 @@ use std::io::Read;
 use std::os::unix::raw::time_t;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use chrono::{DateTime, TimeZone, Utc};
 use curl::easy::Easy;
 use mongodb::{Client, Collection, options::ClientOptions};
 use mongodb::{bson::doc, options::FindOptions};
-use mongodb::bson::Bson::DateTime;
+use mongodb::bson::Bson::DateTime as MongoDateTime;
 use mongodb::bson::Document;
 use rand::Rng;
 // use futures::stream::TryStreamExt;
@@ -18,8 +20,24 @@ use postgres::{Client as psqlClient, NoTls};
 use scraper::{Html, Selector};
 
 
-#[tokio::main]
-async fn main() {
+// #[tokio::main]
+fn main() {
+    let db_host = std::env::var("DB_HOST").unwrap();
+    let db_pass = std::env::var("DB_PASS").unwrap();
+    //https://docs.rs/postgres/latest/postgres/config/struct.Config.html
+    let mut pg_client =
+        psqlClient::connect(format!("host={db_host} user=dev password={db_pass} dbname=wiki1").as_str(),
+                            NoTls).unwrap();
+
+    // CREATE
+    // create_pages_psql(1000, 100, &mut pg_client);
+
+    // get pages
+    get_pages_psql(&mut pg_client);
+
+}
+
+async fn parse_html() {
     let mut start = Instant::now();
 
     let wiki_main_html = reqwest::get("https://en.wikipedia.org/wiki/World_War_I")
@@ -56,71 +74,69 @@ async fn main() {
 #[derive(Serialize, Deserialize, Debug)]
 struct Page {
     id: i32,
-    parent_id: i32,
     title: String,
     body: String,
-    comments: i32,
-    author_id: i32,
     space_key: String,
+    author_id: i32,
+    parent_id: i32,
+    created_at: String, //chrono::DateTime<Utc>, //postgres::types::Timestamp<>
+    last_updated: String // chrono::DateTime<Utc>, //postgres::types::Timestamp<>
 }
 
-async fn mongo_get() -> mongodb::error::Result<()> {
-    let db_url = format!("mongodb+srv://{user}:{pass}@cluster0.t1yi6.mongodb.net/?retryWrites=true&w=majority",
-                         user = std::env::var("USER").unwrap(),
-                         pass = std::env::var("PASS").unwrap());
+// async fn mongo_get() -> mongodb::error::Result<()> {
+//     let db_url = format!("mongodb+srv://{user}:{pass}@cluster0.t1yi6.mongodb.net/?retryWrites=true&w=majority",
+//                          user = std::env::var("USER").unwrap(),
+//                          pass = std::env::var("PASS").unwrap());
+//
+//     // let mut client_options = ClientOptions::parse(db_url).await?;
+//     // client_options.app_name = Some("My App".to_string());
+//     // let client = Client::with_options(client_options)?;
+//     let client = Client::with_uri_str(db_url).await?;
+//     let db_name = "wiki";
+//     let db = client.database(db_name);
+//
+//     let pages_coll = client
+//         .database(db_name)
+//         .collection::<Document>("pages"); // collection::<Page>
+//
+//     let filter = doc! { "parent_id": 0 };
+//     // let find_options = FindOptions::builder().sort(doc! {"record": -1}).build();
+//
+//     // let mut cursor =  workouts_coll.find(None, find_options).await?;
+//     let mut cursor = pages_coll.find(None, None).await?;
+//
+//     // CREATE
+//     // create_pages(pages_coll, 201, 1000).await;
+//
+//     // DELETE!
+//     // pages_coll.delete_many(doc! {}, None).await?;
+//
+//     while cursor.advance().await? {
+//         let raw_doc = cursor.current();
+//         // let mut comment = match raw_doc.get_str("comments") {
+//         //     Ok => raw_doc.get_str("commets").unwrap(),
+//         //     Err => "",
+//         // };
+//         let mut page = Page {
+//             id: raw_doc.get_i32("id").unwrap_or(0),
+//             author_id: raw_doc.get_i32("week").unwrap_or(0),
+//             parent_id: raw_doc.get_i32("parent_id").unwrap_or(0),
+//             title: raw_doc.get_str("title").unwrap_or("").to_string(),
+//             body: raw_doc.get_str("body").unwrap_or("").to_string(),
+//             space_key: raw_doc.get_str("space_key").unwrap_or("").to_string(),
+//             created_at: None, //raw_doc.get_datetime("created_at"),
+//             last_updated: None, //raw_doc.get_datetime("last_updated"),
+//
+//         };
+//         println!("{:?}", page);
+//     }
+//     // println!("{}", rand_string(20).to_string());
+//
+//     Ok(())
+// }
 
-    // let mut client_options = ClientOptions::parse(db_url).await?;
-    // client_options.app_name = Some("My App".to_string());
-    // let client = Client::with_options(client_options)?;
-    let client = Client::with_uri_str(db_url).await?;
-    let db_name = "wiki";
-    let db = client.database(db_name);
 
-    let pages_coll = client
-        .database(db_name)
-        .collection::<Document>("pages"); // collection::<Page>
-
-    let filter = doc! { "parent_id": 0 };
-    // let find_options = FindOptions::builder().sort(doc! {"record": -1}).build();
-
-    // let mut cursor =  workouts_coll.find(None, find_options).await?;
-    let mut cursor = pages_coll.find(None, None).await?;
-
-    // CREATE
-    // create_pages(pages_coll, 201, 1000).await;
-
-    // DELETE!
-    // pages_coll.delete_many(doc! {}, None).await?;
-
-    while cursor.advance().await? {
-        let raw_doc = cursor.current();
-        // let mut comment = match raw_doc.get_str("comments") {
-        //     Ok => raw_doc.get_str("commets").unwrap(),
-        //     Err => "",
-        // };
-        let mut page = Page {
-            id: raw_doc.get_i32("id").unwrap_or(0),
-            comments: raw_doc.get_i32("comments").unwrap(),
-            author_id: raw_doc.get_i32("week").unwrap_or(0),
-            parent_id: raw_doc.get_i32("parent_id").unwrap_or(0),
-            title: raw_doc.get_str("title").unwrap_or("").to_string(),
-            body: raw_doc.get_str("body").unwrap_or("").to_string(),
-            space_key: raw_doc.get_str("space_key").unwrap_or("").to_string(),
-        };
-        println!("{:?}", page);
-    }
-    // println!("{}", rand_string(20).to_string());
-
-    Ok(())
-}
-
-
-fn get_pages_psql() {
-    //https://docs.rs/postgres/latest/postgres/config/struct.Config.html
-    let mut pg_client = psqlClient::connect("host=172.17.0.2 user=dev password=possum dbname=pages", NoTls).unwrap();
-
-    // CREATE
-    // create_pages_psql(100, 100, pg_client);
+fn get_pages_psql(pg_client: &mut postgres::Client) {
 
     // GET
     let rows = pg_client.query("select * from pages", &[]).unwrap();
@@ -143,18 +159,21 @@ fn create_pages_psql(from: i32, size: i32, pg_client: &mut postgres::Client) {
             body: rand_string(20),
             space_key: ["DEV", "TEST", "DEV2"][rand::thread_rng().gen_range(0..2)].to_string(),
             parent_id: rand::thread_rng().gen_range(1..10),
-            comments: 2,
             author_id: 1,
+            created_at: Utc.with_ymd_and_hms(2020, 1, 1, 0, 0, 0).unwrap().to_string(),
+            last_updated: Utc.with_ymd_and_hms(2020, 1, 1, 0, 0, 0).unwrap().to_string(),
         };
-        pg_client.execute("insert into pages (title, space_key, body, parent_id, comments, author_id) \
-                    values ($1, $2, $3, $4, $5, $6)",
+        pg_client.execute("insert into pages (id, title, body, space_key, parent_id, author_id, created_at, last_updated) \
+                    values ($1, $2, $3, $4, $5, $6, $7, $8)",
                           &[
+                              &page.id,
                               &page.title.to_owned(),
-                              &page.space_key.to_owned(),
                               &page.body.to_owned(),
+                              &page.space_key.to_owned(),
                               &page.parent_id,
-                              &page.comments,
                               &page.author_id,
+                              &page.created_at,
+                              &page.last_updated,
                           ])
             .unwrap();
     }

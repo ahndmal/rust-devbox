@@ -21,6 +21,8 @@ serde = "1.0.147"
 scraper = "0.13.0"
 html5ever = "0.26.0"
 kuchiki = "0.8.1"
+chrono = "0.4.23"
+time = "0.3.17"
 
 #[dependencies.windows]
 #version = "0.36.1"
