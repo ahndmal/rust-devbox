@@ -1,3 +1,4 @@
+Trying Rust.
 
 https://doc.rust-lang.org/cargo/commands/cargo-build.html
 
