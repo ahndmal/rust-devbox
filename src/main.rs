@@ -1,40 +1,48 @@
+use std::{fs, io};
 use std::alloc::System;
 use std::ffi::c_int;
 use std::fs::File;
-use std::{fs, io};
 use std::io::Read;
 use std::os::unix::raw::time_t;
-use std::thread::sleep;
+use std::thread;
 use std::time::{Duration, Instant};
+
 use chrono::{DateTime, TimeZone, Utc};
 use curl::easy::Easy;
 use mongodb::{Client, Collection, options::ClientOptions};
 use mongodb::{bson::doc, options::FindOptions};
 use mongodb::bson::Bson::DateTime as MongoDateTime;
 use mongodb::bson::Document;
+use postgres::{Client as psqlClient, NoTls};
 use rand::Rng;
+use scraper::{Html, Selector};
 // use futures::stream::TryStreamExt;
 use serde::{Deserialize, Serialize};
-use postgres::{Client as psqlClient, NoTls};
-use scraper::{Html, Selector};
-use mini_redis::{client as redisClient, Result as RedisResult};
-
 
 #[tokio::main]
-async fn main() -> RedisResult<()> {
-// Open a connection to the mini-redis address.
-    let mut client = redisClient::connect("127.0.0.1:6379").await?;
+async fn main()  {
+    let now = std::time::SystemTime::now();
 
-    // Set the key "hello" with value "world"
-    client.set("hello", "world".into()).await?;
+    let curr_thread = std::thread::current();
+    let thread_id = &curr_thread.id();
 
-    // Get key "hello"
-    let result = client.get("hello").await?;
+    println!("{:?}", curr_thread);
+    println!("{:?}", thread_id);
 
-    println!("got value from the server; result={:?}", result);
+    thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {} from the spawned thread!", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
 
-    Ok(())
+    for i in 1..5 {
+        println!("hi number {} from the main thread!", i);
+        thread::sleep(Duration::from_millis(1));
+    }
 
+    // end
+    println!(">>> action took: {:?} ms", now.elapsed());
 }
 
 fn run_get_pages_psql() {
