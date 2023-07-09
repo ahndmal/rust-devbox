@@ -19,10 +19,37 @@ use scraper::{Html, Selector};
 // use futures::stream::TryStreamExt;
 use serde::{Deserialize, Serialize};
 
-#[tokio::main]
-async fn main()  {
+// #[tokio::main]
+fn main()  {
     let now = std::time::SystemTime::now();
 
+    struct Cat {
+        id: i32,
+        name: String
+    };
+
+    pub trait Meow {
+        fn meow() {
+            println!("meow!");    
+        }
+        
+    }
+    
+    let murz = Cat {
+        id: 123,
+        name: "Murz".to_string(),
+    };
+    
+    println!("{:?}", murz.id);
+
+    // end
+    println!(">>> action took: {:?} ms", now.elapsed());
+}
+
+
+
+
+fn threading() {
     let curr_thread = std::thread::current();
     let thread_id = &curr_thread.id();
 
@@ -40,10 +67,8 @@ async fn main()  {
         println!("hi number {} from the main thread!", i);
         thread::sleep(Duration::from_millis(1));
     }
-
-    // end
-    println!(">>> action took: {:?} ms", now.elapsed());
 }
+
 
 fn run_get_pages_psql() {
     let db_host = std::env::var("DB_HOST").unwrap();
