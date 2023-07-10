@@ -19,6 +19,11 @@ use scraper::{Html, Selector};
 // use futures::stream::TryStreamExt;
 use serde::{Deserialize, Serialize};
 
+trait Content {
+    fn new(title: &'static str) -> Self;
+    fn title(&self) -> &'static str;
+}
+
 // #[tokio::main]
 fn main()  {
     let now = std::time::SystemTime::now();
@@ -31,6 +36,9 @@ fn main()  {
     pub trait Meow {
         fn meow() {
             println!("meow!");    
+        }
+        fn who_meows(&self) {
+            
         }
         
     }
