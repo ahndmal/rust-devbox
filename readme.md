@@ -4,6 +4,8 @@ https://doc.rust-lang.org/cargo/commands/cargo-build.html
 
 cli:
 ```commandline
+sudo apt install libssl-dev
+
 cargo build
 cargo build --release
 cargo run

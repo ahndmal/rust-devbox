@@ -1,6 +1,6 @@
+
 use std::{fs, io};
 use std::alloc::System;
-use std::ffi::c_int;
 use std::fs::File;
 use std::io::Read;
 use std::os::unix::raw::time_t;
@@ -37,10 +37,9 @@ fn main()  {
         fn meow() {
             println!("meow!");    
         }
-        fn who_meows(&self) {
-            
+        fn who_meows(&self) -> String {
+            String::from("Hello")
         }
-        
     }
     
     let murz = Cat {
@@ -53,7 +52,6 @@ fn main()  {
     // end
     println!(">>> action took: {:?} ms", now.elapsed());
 }
-
 
 
 
