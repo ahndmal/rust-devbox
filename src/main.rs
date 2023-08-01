@@ -1,14 +1,12 @@
 
 use std::{fs, io};
 use std::alloc::System;
-use std::fs::File;
 use std::io::Read;
 use std::os::unix::raw::time_t;
 use std::thread;
 use std::time::{Duration, Instant};
 
 use chrono::{DateTime, TimeZone, Utc};
-use curl::easy::Easy;
 use mongodb::{Client, Collection, options::ClientOptions};
 use mongodb::{bson::doc, options::FindOptions};
 use mongodb::bson::Bson::DateTime as MongoDateTime;
