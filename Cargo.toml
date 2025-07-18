@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+rayon = "1.0.3"
 rand = "0.8.5"
 error-chain = "0.12.4"
 reqwest = { version = "0.11", features = ["json"] }
@@ -26,9 +27,18 @@ time = "0.3.17"
 tokio = { version = "1", features = ["full"] }
 mini-redis = "0.4"
 
+[dev-dependencies]
+criterion = "0.2.11"
+rand = "^0.8.5"
+
 #[dependencies.windows]
 #version = "0.36.1"
 #features = [
 #    "alloc",
 #    "Data_Xml_Dom",
 #]
+
+[[bench]]
+name = "seq_vs_par"
+harness = false
+
