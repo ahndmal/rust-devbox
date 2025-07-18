@@ -30,3 +30,45 @@ fn sorted_merge<T: Default + Clone + PartialOrd>(sorted_l: Vec<T>, sorted_r: Vec
     }
     result
 }
+
+///
+/// Merge sort implementation using parallelism.
+/// 
+pub fn merge_sort_par<T>(collection: &[T]) -> Vec<T>
+where
+    T: PartialOrd + Clone + Default + Send + Sync,
+{
+    if collection.len() > 1 {
+        let (l, r) = collection.split_at(collection.len() / 2);
+        let (sorted_l, sorted_r) = rayon::join(|| merge_sort_par(l), 
+        || merge_sort_par(r));
+        sorted_merge(sorted_l, sorted_r)
+    } else {
+        collection.to_vec()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_merge_sort_seq() {
+        assert_eq!(merge_sort_seq(&vec![9, 8, 7, 6]), vec![6, 7, 8, 
+         9]);
+        assert_eq!(merge_sort_seq(&vec![6, 8, 7, 9]), vec![6, 7, 8, 
+         9]);
+        assert_eq!(merge_sort_seq(&vec![2, 1, 1, 1, 1]), vec![1, 1, 
+         1, 1, 2]);
+    }
+
+    #[test]
+    fn test_merge_sort_par() {
+        assert_eq!(merge_sort_par(&vec![9, 8, 7, 6]), vec![6, 7, 8, 
+         9]);
+        assert_eq!(merge_sort_par(&vec![6, 8, 7, 9]), vec![6, 7, 8, 
+         9]);
+        assert_eq!(merge_sort_par(&vec![2, 1, 1, 1, 1]), vec![1, 1, 
+         1, 1, 2]);
+    }
+}
